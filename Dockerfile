@@ -11,4 +11,4 @@ RUN cd /app && node --version && npm --version && npm install
 
 COPY . /app
 
-CMD node --version && npm version && npm start -- --host 0.0.0.0
+CMD npm start
