@@ -4,19 +4,45 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+  - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: mozzarella-variables
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "10.x"
+    displayName: "Install Node.js"
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
+  - script: |
+      export AZURE_STORAGE_KEY="$(azureStorageAccount)"
+      echo "$(azureStorageAccount)"
+      export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
+      echo "$(azureStorageKey)"
+    displayName: "setup storage credentials"
+
+  - script: |
+      npm install -g @angular/cli
+      npm install
+      ng build --prod
+    displayName: "npm install and build"
+
+  - script: |
+      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s ./dist/mozzarella -d="\$web"
+    displayName: "deploy to bucket"
+  # - task: AzureFileCopy@3
+  #   inputs:
+  #     sourcePath: $(Build.Repository.LocalPath)/dist/
+  #     # azureSubscription: 'payg(76cd33dc-2d53-4bf7-a356-1558cc49f261)'
+  #     destination: "azureBlob"
+  #     storage: "mozzarella"
+  #     containerName: "$web"
+  #     # sourcePath: $(Build.Repository.LocalPath)/dist/
+  #     # azureSubscription:
+  #     # destination: "azureBlob" # Options: azureBlob, azureVMs
+  #     # storage:
+  #   displayName: "copy to bucket"
