@@ -16,7 +16,7 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: "10.x"
-    displayName: "Install Node.js"
+    displayName: "install node.js"
 
   - script: |
       export AZURE_STORAGE_KEY="$(azureStorageAccount)"
@@ -32,7 +32,11 @@ steps:
 
   - script: |
       npm run test:unit:ci
-    displayName: "build application"
+    displayName: "unit tests"
+
+  - script: |
+      npm run cypress:ci
+    displayName: "cypress tests"
 
   - script: |
       ng build --prod
