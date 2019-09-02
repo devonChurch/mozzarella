@@ -6,13 +6,19 @@
 trigger:
   - master
 
-pool:
-  vmImage: "ubuntu-latest"
+# pool:
+#   vmImage: "ubuntu-latest"
 
 variables:
-  - group: mozzarella-variables
+- group: mozzarella-variables
 
-steps:
+jobs:
+- job: setup
+  pool:
+    vmImage: "ubuntu-latest"
+  displayName: Setup
+  # dependsOn: ...nothing
+  steps:
   - task: NodeTool@0
     inputs:
       versionSpec: "10.x"
@@ -45,6 +51,45 @@ steps:
       npm run build -- --prod
     displayName: "build application"
 
+# - job: test
+#   pool:
+#     vmImage: "ubuntu-latest"
+#   displayName: Test
+#   dependsOn: setup
+#   steps:
+  # - script: |
+  #     npm run test:unit:ci
+  #   displayName: "unit tests"
+
+  # - script: |
+  #     npm run test:cypress:ci
+  #   displayName: "cypress tests"
+
+  # - script: |
+  #     npm run test:visual
+  #   displayName: "visual tests"
+  # - script: |
+  #     npm run build -- --prod
+  #   displayName: "build application"
+
+- job: setup_fail
+  pool:
+    vmImage: "ubuntu-latest"
+  displayName: Test Fail
+  dependsOn: setup
+  condition: failed()
+  steps:
   - script: |
-      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s ./dist/mozzarella -d="\$web"
+      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
+    displayName: "store failed snapshots"
+
+- job: deploy
+  pool:
+    vmImage: "ubuntu-latest"
+  displayName: Deploy
+  dependsOn: setup
+  steps:
+
+  - script: |
+      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
     displayName: "deploy to bucket"
