@@ -35,14 +35,16 @@ module.exports = function(config) {
     browsers: ["ChromeHeadlessCI", "Chrome"],
     customLaunchers: {
       ChromeHeadlessCI: {
-        base: "ChromiumHeadless",
-        flags: [
-          "--no-sandbox",
-          "--headless",
-          "--disable-gpu",
-          "--disable-translate",
-          "--disable-extensions"
-        ]
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox"]
+        // base: "ChromiumHeadless",
+        // flags: [
+        //   "--no-sandbox",
+        //   "--headless",
+        //   "--disable-gpu",
+        //   "--disable-translate",
+        //   "--disable-extensions"
+        // ]
         // base: "ChromeHeadless",
         // flags: [
         //   "--headless",

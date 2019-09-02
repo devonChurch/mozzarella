@@ -28,8 +28,15 @@ steps:
   - script: |
       npm install -g @angular/cli
       npm install
+    displayName: "npm install"
+
+  - script: |
+      npm run test:unit:ci
+    displayName: "build application"
+
+  - script: |
       ng build --prod
-    displayName: "npm install and build"
+    displayName: "build application"
 
   - script: |
       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s ./dist/mozzarella -d="\$web"

@@ -8,8 +8,8 @@
     "build": "ng build",
     "test": "ng test",
     "test:unit:ci": "ng test --no-watch --browsers=ChromeHeadlessCI",
-    "cypress:dev": "cypress open",
-    "cypress:ci": "cypress run",
+    "cypress:dev": "wait-on http://localhost:4200/ cypress open",
+    "cypress:ci": "start-server-and-test start http://localhost:4200 'cypress run'",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -36,6 +36,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "cypress": "^3.4.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -43,6 +44,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "start-server-and-test": "^1.10.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
