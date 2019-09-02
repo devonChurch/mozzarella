@@ -26,7 +26,6 @@ steps:
     displayName: "setup storage credentials"
 
   - script: |
-      npm install -g @angular/cli
       npm install
     displayName: "npm install"
 
@@ -35,11 +34,15 @@ steps:
     displayName: "unit tests"
 
   - script: |
-      npm run cypress:ci
+      npm run test:cypress:ci
     displayName: "cypress tests"
 
   - script: |
-      ng build --prod
+      npm run test:visual
+    displayName: "visual tests"
+
+  - script: |
+      npm run build -- --prod
     displayName: "build application"
 
   - script: |

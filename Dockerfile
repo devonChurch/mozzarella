@@ -1,6 +1,8 @@
 # FROM node:10.16.3-alpine
 # FROM rastasheep/alpine-node-chromium:10-alpine
-FROM cypress/browsers:node12.6.0-chrome75
+# FROM cypress/browsers:node12.6.0-chrome75
+# FROM debian:latest
+FROM node:10.16
 
 WORKDIR /app
 
@@ -17,6 +19,8 @@ WORKDIR /app
 #     chromium \
 
 RUN apt-get update --yes && apt-get install --yes bash
+
+RUN apt-get install --yes xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer

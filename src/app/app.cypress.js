@@ -1,6 +1,6 @@
-describe("My First Test", function() {
-  it("Does not do much!", function() {
-    cy.visit("http://localhost:4200/");
-    cy.get("h2").contains("🌽");
+describe("AppComponent", function() {
+  it("should render title", function() {
+    cy.visit("/");
+    cy.get(".content span").contains("mozzarella app is running!");
   });
 });
