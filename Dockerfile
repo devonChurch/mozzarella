@@ -1,5 +1,6 @@
 # FROM node:10.16.3-alpine
-FROM rastasheep/alpine-node-chromium:10-alpine
+# FROM rastasheep/alpine-node-chromium:10-alpine
+FROM cypress/browsers:node12.6.0-chrome75
 
 WORKDIR /app
 
@@ -15,7 +16,7 @@ WORKDIR /app
 #     ttf-freefont \
 #     chromium \
 
-RUN apk update && apk add bash
+RUN apt-get update --yes && apt-get install --yes bash
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
@@ -46,6 +47,7 @@ RUN cd /app && node --version && npm --version && npm install
 
 COPY . /app
 
+ENTRYPOINT /bin/bash
 # ENTRYPOINT ["/bin/bash"]
 # ENTRYPOINT ["/bin/bash -c"]
 # ENTRYPOINT npm run
@@ -53,5 +55,5 @@ COPY . /app
 # CMD ["-- -c \"npm start\""]
 # CMD ["-c \"npm start\""]
 # CMD ["npm start"]
-CMD npm start
+# CMD npm start
 

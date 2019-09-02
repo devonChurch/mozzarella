@@ -34,15 +34,3 @@ steps:
   - script: |
       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s ./dist/mozzarella -d="\$web"
     displayName: "deploy to bucket"
-  # - task: AzureFileCopy@3
-  #   inputs:
-  #     sourcePath: $(Build.Repository.LocalPath)/dist/
-  #     # azureSubscription: 'payg(76cd33dc-2d53-4bf7-a356-1558cc49f261)'
-  #     destination: "azureBlob"
-  #     storage: "mozzarella"
-  #     containerName: "$web"
-  #     # sourcePath: $(Build.Repository.LocalPath)/dist/
-  #     # azureSubscription:
-  #     # destination: "azureBlob" # Options: azureBlob, azureVMs
-  #     # storage:
-  #   displayName: "copy to bucket"
