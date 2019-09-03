@@ -1,4 +1,4 @@
-const WAIT = 10;
+const WAIT = 1000;
 
 describe("AppComponent", function() {
   it("should match previous snapshot", function() {

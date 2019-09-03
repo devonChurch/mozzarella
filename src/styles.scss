@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+@function pxToRem($px) {
+  $rem: $px / 16;
+  @return #{$rem}rem;
+}
+
+$font-size-300: pxToRem(12) !default;
+$font-size-400: pxToRem(14) !default;
+$font-size-500: pxToRem(16) !default;
+$font-size-600: pxToRem(18) !default;
+$font-size-700: pxToRem(22) !default;
+$font-size-800: pxToRem(28) !default;
+$font-size-900: pxToRem(32) !default;
+
+$font-weight-400: 400 !default;
+$font-weight-500: 500 !default;
+$font-weight-600: 600 !default;
+$font-weight-700: 700 !default;
+
+$font-family-primary: "azo" !default;
+$font-primary-all: (
+  $font-family-primary "regular" $font-weight-400 normal,
+  $font-family-primary "bold" $font-weight-600 normal
+);
+
+$font-family-secondary: "Open Sans" !default;
+$font-secondary-all: (
+  $font-family-secondary "regular" $font-weight-400 normal,
+  $font-family-secondary "regular-italic" $font-weight-400 italic,
+  $font-family-secondary "bold" $font-weight-700 normal,
+  $font-family-secondary "bold-italic" $font-weight-700 italic
+);
+
+@each $family, $file, $weight, $style in $font-primary-all {
+  @font-face {
+    font-family: $family;
+    src: url("assets/fonts/azo-sans/azo-sans-#{$file}-webfont.woff")
+      format("woff");
+    font-weight: $weight;
+    font-style: $style;
+    font-display: swap;
+  }
+}
+
+@each $family, $file, $weight, $style in $font-secondary-all {
+  @font-face {
+    font-family: $family;
+    src: url("assets/fonts/open-sans/open-sans-#{$file}-webfont.woff2")
+      format("woff2");
+    font-weight: $weight;
+    font-style: $style;
+    font-display: swap;
+  }
+}
+
+@mixin createPrimaryFontDisplay(
+  /** regular / black */ $weight: regular,
+  /** normal / italic */ $style: normal
+) {
+  $font-weight: $font-weight-400;
+
+  @if $weight == bold {
+    $font-weight: $font-weight-600;
+  }
+
+  font: {
+    display: swap !important;
+    family: #{$font-family-primary}, sans-serif !important;
+    style: $style !important;
+    weight: $font-weight !important;
+  }
+}
+
+@mixin createSecondaryFontDisplay(
+  /** regular / black */ $weight: regular,
+  /** normal / italic */ $style: normal
+) {
+  $font-weight: $font-weight-400;
+
+  @if $weight == bold {
+    $font-weight: $font-weight-700;
+  }
+
+  font: {
+    display: swap !important;
+    family: #{$font-family-secondary}, sans-serif !important;
+    style: $style !important;
+    weight: $font-weight !important;
+  }
+}
+
+body {
+  @include createSecondaryFontDisplay();
+  font-size: $font-size-500 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include createPrimaryFontDisplay(bold);
+}

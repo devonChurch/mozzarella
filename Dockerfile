@@ -1,8 +1,11 @@
 # FROM node:10.16.3-alpine
 # FROM rastasheep/alpine-node-chromium:10-alpine
 # FROM cypress/browsers:node12.6.0-chrome75
+FROM cypress/browsers:node10.16.0-chrome76
 # FROM debian:latest
-FROM node:10.16
+# FROM node:10.16
+# FROM ubuntu:latest
+# FROM ubuntu:14.04
 
 WORKDIR /app
 
@@ -20,7 +23,43 @@ WORKDIR /app
 
 RUN apt-get update --yes && apt-get install --yes bash
 
-RUN apt-get install --yes xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+# RUN apt-get install --yes curl \
+#   && curl -sL https://deb.nodesource.com/setup_10.x | -E bash - \
+#   && apt-get install --yes nodejs
+
+# Install Node.js
+# RUN apt-get install --yes curl
+# RUN curl --silent --location https://deb.nodesource.com/setup_10.x | sudo bash -
+# RUN apt-get install --yes nodejs
+# RUN apt-get install --yes build-essential
+
+# RUN echo "Node $(node --version) / NPM $(npm --version)"
+
+# RUN set -x \
+#   && apk-get update \
+#   && apk-get upgrade \
+#   && apk-get install bash \
+#   && apk-get install --no-cache \
+#   udev \
+#   ttf-freefont \
+#   chromium \
+
+# RUN apt-get install --yes xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+
+# # Add user with SUDO permissions.
+# # https://stackoverflow.com/questions/25845538/how-to-use-sudo-inside-a-docker-container
+# RUN apt-get update && apt-get -y install sudo
+# RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+# USER docker
+
+# # Install Azure CLI.
+# # https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest
+# RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+# RUN apt-get install --yes nodejs
+
+# RUN apt-get install --yes xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer

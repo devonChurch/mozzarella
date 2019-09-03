@@ -6,19 +6,17 @@
 trigger:
   - master
 
-# pool:
-#   vmImage: "ubuntu-latest"
+pool:
+  vmImage: "ubuntu-latest"
+
+# container: ubuntu:16.04
+# container: ubuntu:14.04
+container: cypress/browsers:node10.16.0-chrome76
 
 variables:
 - group: mozzarella-variables
 
-jobs:
-- job: setup
-  pool:
-    vmImage: "ubuntu-latest"
-  displayName: Setup
-  # dependsOn: ...nothing
-  steps:
+steps:
   - task: NodeTool@0
     inputs:
       versionSpec: "10.x"
@@ -31,25 +29,80 @@ jobs:
       echo "$(azureStorageKey)"
     displayName: "setup storage credentials"
 
+  # - script: |
+  #     curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+  #   displayName: "azure cli install"
+
   - script: |
       npm install
     displayName: "npm install"
 
-  - script: |
-      npm run test:unit:ci
-    displayName: "unit tests"
+  # - script: |
+  #     npm run test:unit:ci
+  #   displayName: "unit tests"
 
-  - script: |
-      npm run test:cypress:ci
-    displayName: "cypress tests"
+  # - script: |
+  #     npm run test:cypress:ci
+  #   displayName: "cypress tests"
 
   - script: |
       npm run test:visual
     displayName: "visual tests"
 
+  # - script: |
+  #     az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
+  #   displayName: "store snapshots"
+
   - script: |
       npm run build -- --prod
     displayName: "build application"
+
+  - script: |
+      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
+    displayName: "deploy to bucket"
+
+# jobs:
+# - job: setup
+#   pool:
+#     vmImage: "ubuntu-latest"
+#   displayName: Setup
+#   # dependsOn: ...nothing
+#   steps:
+#   - task: NodeTool@0
+#     inputs:
+#       versionSpec: "10.x"
+#     displayName: "install node.js"
+
+#   - script: |
+#       export AZURE_STORAGE_KEY="$(azureStorageAccount)"
+#       echo "$(azureStorageAccount)"
+#       export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
+#       echo "$(azureStorageKey)"
+#     displayName: "setup storage credentials"
+
+#   - script: |
+#       npm install
+#     displayName: "npm install"
+
+#   - script: |
+#       npm run test:unit:ci
+#     displayName: "unit tests"
+
+#   - script: |
+#       npm run test:cypress:ci
+#     displayName: "cypress tests"
+
+#   - script: |
+#       npm run test:visual
+#     displayName: "visual tests"
+
+#   - script: |
+#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
+#     displayName: "store snapshots"
+
+#   - script: |
+#       npm run build -- --prod
+#     displayName: "build application"
 
 # - job: test
 #   pool:
@@ -72,24 +125,24 @@ jobs:
   #     npm run build -- --prod
   #   displayName: "build application"
 
-- job: setup_fail
-  pool:
-    vmImage: "ubuntu-latest"
-  displayName: Test Fail
-  dependsOn: setup
-  condition: failed()
-  steps:
-  - script: |
-      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
-    displayName: "store failed snapshots"
+# - job: setup_fail
+#   pool:
+#     vmImage: "ubuntu-latest"
+#   displayName: Test Fail
+#   dependsOn: setup
+#   condition: failed()
+#   steps:
+#   - script: |
+#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
+#     displayName: "store failed snapshots"
 
-- job: deploy
-  pool:
-    vmImage: "ubuntu-latest"
-  displayName: Deploy
-  dependsOn: setup
-  steps:
+# - job: deploy
+#   pool:
+#     vmImage: "ubuntu-latest"
+#   displayName: Deploy
+#   dependsOn: setup
+#   steps:
 
-  - script: |
-      az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
-    displayName: "deploy to bucket"
+#   - script: |
+#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
+#     displayName: "deploy to bucket"
