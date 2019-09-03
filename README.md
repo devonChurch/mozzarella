@@ -1,5 +1,7 @@
 # Mozzarella
 
+[![Build Status](https://dev.azure.com/notifydevon/notifydevon/_apis/build/status/devonChurch.mozzarella?branchName=master)](https://dev.azure.com/notifydevon/notifydevon/_build/latest?definitionId=1&branchName=master)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.2.
 
 ## Development server
