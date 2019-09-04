@@ -1,152 +1,35 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
   - master
 
-# pool:
-#   vmImage: "ubuntu-latest"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# container: ubuntu:16.04
-# container: ubuntu:14.04
-# container: cypress/browsers:node10.16.0-chrome76
-
-# resources:
-#   containers:
-#   - container: ubuntu_image
-#     image: ubuntu:14.04
-
-#   - container: cypress_image
-#     image: cypress/browsers:node10.16.0-chrome76
-
-
-# pool:
-#   name: ubuntu_image  # name of the pool to run this job in
-#   vmImage: "ubuntu-latest" # name of the vm image you want to use, only valid in the Microsoft-hosted pool
-
-  # pool:
-#   name: string  # name of the pool to run this job in
-#   demands: string | [ string ]  ## see below
-#   vmImage: string # name of the vm image you want to use, only valid in the Microsoft-hosted pool
-
+# Pipeline "variable container" that holds the Azure Blob Storage account information
+# (for deploying our application into a Container).
 variables:
 - group: mozzarella-variables
 
-# steps:
-#   - task: NodeTool@0
-#     inputs:
-#       versionSpec: "10.x"
-#     displayName: "install node.js"
-
-#   - script: |
-#       export AZURE_STORAGE_KEY="$(azureStorageAccount)"
-#       echo "$(azureStorageAccount)"
-#       export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
-#       echo "$(azureStorageKey)"
-#     displayName: "setup storage credentials"
-
-#   # - script: |
-#   #     curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-#   #   displayName: "azure cli install"
-
-#   - script: |
-#       npm install
-#     displayName: "npm install"
-
-  # - script: |
-  #     npm run test:unit:ci
-  #   displayName: "unit tests"
-
-  # - script: |
-  #     npm run test:cypress:ci
-  #   displayName: "cypress tests"
-
-  # - script: |
-  #     npm run test:visual
-  #   displayName: "visual tests"
-
-  # # - script: |
-  # #     az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
-  # #   displayName: "store snapshots"
-
-  # - script: |
-  #     npm run build -- --prod
-  #   displayName: "build application"
-
-  # - script: |
-  #     az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
-  #   displayName: "deploy to bucket"
-
-# jobs:
-# - job: setup
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Setup
-#   # dependsOn: ...nothing
-#   steps:
-#   - task: NodeTool@0
-#     inputs:
-#       versionSpec: "10.x"
-#     displayName: "install node.js"
-
-#   - script: |
-#       export AZURE_STORAGE_KEY="$(azureStorageAccount)"
-#       echo "$(azureStorageAccount)"
-#       export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
-#       echo "$(azureStorageKey)"
-#     displayName: "setup storage credentials"
-
-#   - script: |
-#       npm install
-#     displayName: "npm install"
-
-#   - script: |
-#       npm run test:unit:ci
-#     displayName: "unit tests"
-
-#   - script: |
-#       npm run test:cypress:ci
-#     displayName: "cypress tests"
-
-#   - script: |
-#       npm run test:visual
-#     displayName: "visual tests"
-
-#   - script: |
-#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
-#     displayName: "store snapshots"
-
-#   - script: |
-#       npm run build -- --prod
-#     displayName: "build application"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 jobs:
-# - job: setup
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Setup
-#   # dependsOn: ...nothing
-#   steps:
-#   - task: NodeTool@0
-#     inputs:
-#       versionSpec: "10.x"
-#     displayName: "install node.js"
 
-#   - script: |
-#       npm run test:unit:ci
-#     displayName: "unit tests"
-
-
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 - job: cypress
   pool:
-    # vmImage: "cypress_image"
     vmImage: "ubuntu-latest"
+
+  # Utilise the same Cypress setup that we run locally as part of our Docker
+  # configuration. This gives us consistent visual regression results independent
+  # of environment.
+  #
+  # @see https://github.com/cypress-io/cypress-docker-images
+  # @see https://docs.cypress.io/examples/examples/docker.html#Images
+  #
+  # Everything Cypress related gets run in this container. Once we successfully
+  # complete the test we move on with Azures generic Ubuntu image.
   container: cypress/browsers:node10.16.0-chrome76
   displayName: Cypress tests
-  # dependsOn: Nothing...
+  # dependsOn: Nothing... (first step in the pipeline sequence).
   steps:
 
   - script: |
@@ -161,24 +44,11 @@ jobs:
       npm run test:visual
     displayName: "visual tests"
 
-
-# - job: setup_fail
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Test Fail
-#   dependsOn: setup
-#   condition: failed()
-#   steps:
-
-#   - script: |
-#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
-#     displayName: "store failed snapshots"
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 - job: setup_deploy
   pool:
-    # vmImage: "ubuntu_image"
     vmImage: "ubuntu-latest"
-  # container: ubuntu:16.04
   displayName: Setup / Deploy
   dependsOn: cypress
   steps:
@@ -192,6 +62,10 @@ jobs:
       npm install
     displayName: "npm install"
 
+  # We run our unit test kinda late (after our Cypress stuff) because we need the
+  # version of Chromium supplied with Ubuntu. Cypress does have its own Chrome
+  # binary but its difficult to consistently get Karma to hook into its (not
+  # native) reference.
   - script: |
       npm run test:unit:ci
     displayName: "unit tests"
@@ -202,8 +76,8 @@ jobs:
 
   - script: |
       export AZURE_STORAGE_KEY="$(azureStorageAccount)"
-      echo "$(azureStorageAccount)"
       export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
+      echo "$(azureStorageAccount)"
       echo "$(azureStorageKey)"
     displayName: "setup storage credentials"
 
@@ -211,46 +85,3 @@ jobs:
       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
     displayName: "deploy to container"
 
-
-# - job: test
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Test
-#   dependsOn: setup
-#   steps:
-  # - script: |
-  #     npm run test:unit:ci
-  #   displayName: "unit tests"
-
-  # - script: |
-  #     npm run test:cypress:ci
-  #   displayName: "cypress tests"
-
-  # - script: |
-  #     npm run test:visual
-  #   displayName: "visual tests"
-  # - script: |
-  #     npm run build -- --prod
-  #   displayName: "build application"
-
-# - job: setup_fail
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Test Fail
-#   dependsOn: setup
-#   condition: failed()
-#   steps:
-#   - script: |
-#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./cypress/snapshots" -d="snapshots"
-#     displayName: "store failed snapshots"
-
-# - job: deploy
-#   pool:
-#     vmImage: "ubuntu-latest"
-#   displayName: Deploy
-#   dependsOn: setup
-#   steps:
-
-#   - script: |
-#       az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
-#     displayName: "deploy to bucket"
