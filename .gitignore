@@ -44,3 +44,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Configuration
+# > The environment config is injected at build time and should not pollute source
+# > control (environment "A" reference being merged into environment "B").
+/src/asssets/mozzarella.config.js
