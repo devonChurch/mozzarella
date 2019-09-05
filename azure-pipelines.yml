@@ -27,22 +27,22 @@ jobs:
   #
   # Everything Cypress related gets run in this container. Once we successfully
   # complete the test we move on with Azures generic Ubuntu image.
-  # container: cypress/browsers:node10.16.0-chrome76
-  # displayName: Cypress tests
-  # # dependsOn: Nothing... (first step in the pipeline sequence).
-  # steps:
+  container: cypress/browsers:node10.16.0-chrome76
+  displayName: Cypress tests
+  # dependsOn: Nothing... (first step in the pipeline sequence).
+  steps:
 
-  # - script: |
-  #     npm install
-  #   displayName: "npm install"
+  - script: |
+      npm install
+    displayName: "npm install"
 
-  # - script: |
-  #     npm run test:cypress:ci
-  #   displayName: "e2e tests"
+  - script: |
+      npm run test:cypress:ci
+    displayName: "e2e tests"
 
-  # - script: |
-  #     npm run test:visual
-  #   displayName: "visual tests"
+  - script: |
+      npm run test:visual:ci:exe
+    displayName: "visual tests"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -50,7 +50,7 @@ jobs:
   pool:
     vmImage: "ubuntu-latest"
   displayName: Setup / Deploy
-  # dependsOn: cypress
+  dependsOn: cypress
   steps:
 
   - task: NodeTool@0
@@ -66,9 +66,9 @@ jobs:
   # version of Chromium supplied with Ubuntu. Cypress does have its own Chrome
   # binary but its difficult to consistently get Karma to hook into its (not
   # native) reference.
-  # - script: |
-  #     npm run test:unit:ci
-  #   displayName: "unit tests"
+  - script: |
+      npm run test:unit:ci
+    displayName: "unit tests"
 
   - script: |
       npm run build -- --prod
@@ -85,15 +85,6 @@ jobs:
   #     az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
   #   displayName: "deploy to container"
 
-  # - publish: $(System.DefaultWorkingDirectory)/bin/WebApp
   - publish: ./dist/mozzarella
     artifact: mozzarella_build_artifact
-  # - task: PublishPipelineArtifact@1
-  #   inputs:
-  #     path: ./dist/mozzarella/
-  #     artifact: mozzarella_build_artifact
-  # - task: DownloadPipelineArtifact@2
-  #   inputs:
-  #     artifact: mozzarella_build_artifact
-  #     patterns: '**/*.*'
-  #     path: ./dist/mozzarella/
+

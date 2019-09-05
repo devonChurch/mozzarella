@@ -49,3 +49,7 @@ Thumbs.db
 # > The environment config is injected at build time and should not pollute source
 # > control (environment "A" reference being merged into environment "B").
 /src/asssets/mozzarella.config.js
+
+# Tests
+/cypress/screenshots
+/cypress/snapshots/app.visual.js/__diff_output__
