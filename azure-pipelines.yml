@@ -74,13 +74,8 @@ jobs:
       npm run build -- --prod
     displayName: "build application"
 
-  # - script: |
-  #     export AZURE_STORAGE_KEY="$(azureStorageAccount)"
-  #     export AZURE_STORAGE_ACCOUNT="$(azureStorageKey)"
-  #     echo "$(azureStorageAccount)"
-  #     echo "$(azureStorageKey)"
-  #   displayName: "setup storage credentials"
-
+  # We are no longer directly deploying as part of the build process, instead we
+  # publish an artefact for consumption by multiple environments.
   # - script: |
   #     az storage blob upload-batch --account-name="$(azureStorageAccount)" --account-key="$(azureStorageKey)" -s="./dist/mozzarella" -d="\$web"
   #   displayName: "deploy to container"

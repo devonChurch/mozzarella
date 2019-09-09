@@ -9,6 +9,13 @@
   </head>
   <body>
     <app-root></app-root>
+    <!--
+     - Pull in the configuration relative to the applications current environment
+     - (`development`, `staging`, `production`).
+     -
+     - We make sure to load this file in synchronously BEFORE the main application
+     - so that the config params are ready to initialise the core code at run time.
+    -->
     <script src="assets/mozzarella.config.js"></script>
   </body>
 </html>
